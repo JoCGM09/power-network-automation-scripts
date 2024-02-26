@@ -11,7 +11,7 @@ service_list_output=$(ibmcloud pi service-list)
 service_crn=$(echo "$service_list_output" | awk -v workspace="$IBM_POWER_WORKSPACE_NAME" '$0 ~ workspace {print $1}')
 ibmcloud pi service-target "$service_crn"
 
-#########################  Script 4: Attach subnet  ##########################   
+#########################  Script 4: Attach subnet  #########################   
 
 # Instance target
 instance_crn=""
@@ -26,21 +26,16 @@ subnets_output=$(ibmcloud pi networks --long)
 subnet_id=$(echo "$subnets_output" | awk -v subnet="$IBM_POWER_SUBNET_NAME" '$2 == subnet {print $1}')
 
 if [ -n "$instance_crn" ] && [ -n "$subnet_id" ]; then
+  connection_flags=""
   if [[ "$AUTO_ASSIGN_IP" == "true" ]]; then
-    echo "Attaching subnet into LPAR with auto assigned IP..."
-    if ibmcloud pi instance-attach-network "$IBM_POWER_INSTANCE_NAME" --network "$subnet_id"; then
-      echo "Subnet attached into LPAR with auto assigned IP."
-    else
-      echo "Error: Unable to attach subnet."
-    fi
+    connection_flags+="--auto-assign-ip "
   else
-    echo "Attaching subnet into LPAR with defined IP"
-    if ibmcloud pi instance-attach-network "$IBM_POWER_INSTANCE_NAME" --network "$subnet_id" --ip-address "$IBM_INSTANCE_ATTACH_IP"; then
-      echo "Subnet attached into LPAR with IP $IBM_INSTANCE_ATTACH_IP."
-    else
-      echo "Error: Unable to attach subnet."
-    fi
+    connection_flags+="--ip-address $IBM_INSTANCE_ATTACH_IP "
   fi
+
+  echo "Attaching subnet into LPAR..."
+  ibmcloud pi instance-attach-network "$IBM_POWER_INSTANCE_NAME" --network "$subnet_id" $connection_flags
+  echo "Subnet attached into LPAR."
 elif [ -n "$instance_crn" ]; then
   echo "Subnet ($IBM_POWER_SUBNET_NAME) doesn't exist."
 elif [ -n "$subnet_id" ]; then

@@ -11,7 +11,7 @@ service_list_output=$(ibmcloud pi service-list)
 service_crn=$(echo "$service_list_output" | awk -v workspace="$IBM_POWER_WORKSPACE_NAME" '$0 ~ workspace {print $1}')
 ibmcloud pi service-target "$service_crn"
 
-#########################  Script 5: Create cloud connection  ##########################    
+#########################  Script 6: Create cloud connection  ##########################    
 
 # Speed validation 
 declare -a valid_speeds=("50" "100" "200" "500" "1000" "2000" "5000" "10000")

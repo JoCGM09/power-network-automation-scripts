@@ -1,17 +1,17 @@
-## Instalar CLI de IBM Cloud:
-- Desde Windows: 
+## Install IBM Cloud CLI:
+- From Windows: 
     ```
     iex (New-Object Net.WebClient).DownloadString('https://clis.cloud.ibm.com/install/powershell')
     ```
-- Desde Linux: 
+- From Linux: 
     ```
     curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
     ```
-- Desde Mac:
+- From Mac:
     ```
     curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
     ```
-## Comandos para descargar los plugins de IBM Cloud CLI:
+## Install Plugins:
 - Plugin de PowerVS:
     ```
     ibmcloud plugin install power-iaas
@@ -21,26 +21,43 @@
     ```
     ibmcloud plugin install vpc-infrastructure
     ```
-    
-## Dar permisos de ejecución a la carpeta scripts donde están los archivos .sh:
+
+## Give execution permissions to the scripts folder where the .sh files are located:
 ```
-cd power-bash-scripts
+cd power-network-automation-scripts
 chmod +x scripts/*.sh
 ```
 
-## Crear archivo .env
-Variables de entorno:
-``` 
-    IBM_CLOUD_API_KEY= IAM API Key con permisos de creación de PowerVS y Transit Gateway
-    IBM_POWER_WORKSPACE_NAME= Nombre del Workspace de PowerVS
-    IBM_POWER_SUBNET_NAME= Nombre de la subred privada
-    IBM_POWER_CIDR= CIDR asignado para la subred privada ej: "192.168.5.0/24"
-    IBM_POWER_IP_RANGE= Rango de IPs dentro del cidr utilizables ej: "192.168.5.2-192.168.5.254"
-    IBM_POWER_GATEWAY= IP del Power Gateway, primera IP del CIDR ej: "192.168.5.1"
-    IBM_POWER_INSTANCE_NAME= Nombre de una instancia LPAR
-    IBM_INSTANCE_ATTACH_IP= IP específica para vincular un LPAR a una subred
-    AUTO_ASSIGN_IP= Booleano para validar la asignación de una IP automática ej: true para asignación automática
-```
+## Script 1: Create private subnet
+ This script creates a subnet in a PowerVS Workspace if the name does not exist or a subnet with the same CIDR does not exist.
+
+# Parameters:
+    - Private subnet name
+    - CIDR Block
+    - IP range
+    - Power Gateway
+    - MTU (optional) 1450 by default 
+
+# Environment variables for .env file:
+
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| variable name             | description                                                    | type   | example                     | use case |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_CLOUD_API_KEY        | API key con permisos de escritura en PowerVS                   | string | "my_ibm_api_key"            | required |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_POWER_WORKSPACE_NAME | IBM PowerVS Workspace Name                                     | string | "my_workspace"              | required |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_POWER_SUBNET_NAME    | Nombre deseado para la subred por crear                        | string | "my-private-subnet"         | required |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_POWER_CIDR           | CIDR válido para la creación de la subred                      | string | "192.168.5.0/24"            | required |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_POWER_IP_RANGE       | Rango de IPs válidos según el CIDR. Sin la primera y última IP | string | "192.168.5.2-192.168.5.254" | required |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_POWER_GATEWAY        | IP del gateway. Primera IP válida del CIDR                     | string | "192.168.5.1"               | required |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+| $IBM_POWER_MTU            | MTU para la subred. 1450 por defecto                           | string | "1500"                      | optional |
++---------------------------+----------------------------------------------------------------+--------+-----------------------------+----------+
+
 
 
 

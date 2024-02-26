@@ -1,9 +1,14 @@
 ## Instalar CLI de IBM Cloud:
 - Desde Windows: 
+
     `iex (New-Object Net.WebClient).DownloadString('https://clis.cloud.ibm.com/install/powershell')`
+
 - Desde Linux: 
+
     `curl -fsSL https://clis.cloud.ibm.com/install/linux | sh`
+
 - Desde Mac:
+
     `curl -fsSL https://clis.cloud.ibm.com/install/osx | sh`
 
 ## Comandos para descargar los plugins de IBM Cloud CLI:

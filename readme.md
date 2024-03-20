@@ -22,6 +22,11 @@
     ibmcloud plugin install vpc-infrastructure
     ```
 
+- Plugin de Transit Gateway:
+    ```
+    ibmcloud plugin install tg
+    ```
+
 ## Give execution permissions to the scripts folder where the .sh files are located:
 ```
 cd power-network-automation-scripts

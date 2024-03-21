@@ -30,7 +30,7 @@ if [ -n "$instance_crn" ] && [ -n "$subnet_id" ]; then
   if [[ "$AUTO_ASSIGN_IP" == "true" ]]; then
     connection_flags+="--auto-assign-ip "
   else
-    connection_flags+="--ip-address $IBM_INSTANCE_ATTACH_IP "
+    connection_flags+="--ip-address $IBM_INSTANCE_ATTACH_IP"
   fi
 
   echo "Attaching subnet into LPAR..."

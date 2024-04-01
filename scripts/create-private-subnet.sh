@@ -1,7 +1,7 @@
 #!/bin/bash
-if [ -f ../.env ]; then
-  source ../.env
-fi
+#if [ -f ../.env ]; then
+#  source ../.env
+#fi
 
 # login validation
 ibmcloud login --apikey $IBM_CLOUD_API_KEY -q

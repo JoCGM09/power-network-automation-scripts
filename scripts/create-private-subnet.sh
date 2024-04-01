@@ -13,37 +13,35 @@ ibmcloud pi service-target "$service_crn"
 
 #########################  Script 1: Create private subnet  ##########################    
 
-# Subnet Target
-
 existing_subnet=""
-subnets_output=$(ibmcloud pi networks --long)
-existing_subnet=$(echo "$subnets_output" | awk -v subnet="$IBM_POWER_SUBNET_NAME" '$2 == subnet {print $2}')
-
-# CIDR Target
+subnets_output=$(ibmcloud pi subnet list)
+existing_subnet=$(echo "$subnets_output" | awk -v subnet="$IBM_POWER_SUBNET_NAME" '$2 == subnet {print $1}')
 
 existing_cidr=""
-existing_cidr=$(echo "$subnets_output" | awk -v cidr="$IBM_POWER_CIDR" '$5 == cidr {print $5}')
+existing_cidr=$(echo ibmcloud pi subnet get "$subnet_id" | awk -F ' ' '/CIDR Block/ {print $NF}')
 
 if [ -n "$existing_subnet" ]; then
-  echo "Subnet '$existing_subnet' already exists."
+  echo "Subnet '$existing_subnet' still exists."
+  exit 1
 elif [ -n "$existing_cidr" ]; then
   echo "CIDR ($existing_cidr) already exists."
+  exit 1
 else
   echo "Creating subnet..."
   if [ -n "$IBM_POWER_MTU" ]; then
-    if ibmcloud pi network-create-private "$IBM_POWER_SUBNET_NAME" --cidr-block "$IBM_POWER_CIDR" --ip-range "$IBM_POWER_IP_RANGE" --gateway "$IBM_POWER_GATEWAY" --mtu "$IBM_POWER_MTU"; then
+    if ibmcloud pi subnet create "$IBM_POWER_SUBNET_NAME" --cidr-block "$IBM_POWER_CIDR" --net-type private --ip-range "$IBM_POWER_IP_RANGE" --gateway "$IBM_POWER_GATEWAY" --mtu "$IBM_POWER_MTU"; then
       echo "Subnet created with MTU: $IBM_POWER_MTU."
     else
       echo "Error: Unable to create subnet."
+      
     fi
   else
-    if ibmcloud pi network-create-private "$IBM_POWER_SUBNET_NAME" --cidr-block "$IBM_POWER_CIDR" --ip-range "$IBM_POWER_IP_RANGE" --gateway "$IBM_POWER_GATEWAY"; then
+    if  ibmcloud pi subnet create "$IBM_POWER_SUBNET_NAME" --cidr-block "$IBM_POWER_CIDR" --net-type private --ip-range "$IBM_POWER_IP_RANGE" --gateway "$IBM_POWER_GATEWAY"; then
       echo "Subnet created with default MTU (1450)."
     else
       echo "Error: Unable to create subnet."
+      exit 1
     fi
   fi
 fi
-
-
 ibmcloud logout
